@@ -61,40 +61,6 @@
   </entry>
   
   <entry>
-    <title>[搞笑文章]一种基于DNS的网站阻断服务</title>
-    <link href="https://blog.wdfqx.top/posts/b7b5a0d8/"/>
-    <id>https://blog.wdfqx.top/posts/b7b5a0d8/</id>
-    <published>2025-09-12T14:22:47.000Z</published>
-    <updated>2025-09-12T14:22:47.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="0-引言"><a href="#0-引言" class="headerlink" title="0.引言"></a>0.引言</h2><p>众所周知，如果你想屏蔽某地区的IP地址，你就要在服务端设置iptables&#x2F;WAF规则，但这会带来额外的性能开销导致网站并发性能下降且对静态网站站长们（尤其是使用云托管&#x2F;虚拟主机的站长）极不友好，IP屏蔽苦站长久矣。对此，我设计了这个网站阻断服务，永久免费、接入简单、保障极高的可用性（承诺SLA为99.999999999%），解救站长于水火之中</p><h2 id="1-服务简介"><a href="#1-服务简介" class="headerlink" title="1.服务简介"></a>1.服务简介</h2><p>如上文所述，我上线了这项服务，保证IP屏蔽成功率99.99999%，有效解决了站长们的地区屏蔽难题。本服务工作于DNS层，无需担心本服务可能的故障问题。针对下一代网络协议IPv6亦有所支持，确保双栈用户均能实现无法访问您的网站（不是）</p><h3 id="1-1-本服务架构"><a href="#1-1-本服务架构" class="headerlink" title="1.1 本服务架构"></a>1.1 本服务架构</h3><p>本服务由CloudFlare DNS强力驱动，免费提供阻断节点地址，确保全球范围内都能够实现完美阻断<br>在此列出本服务所使用的IP地址，这些地址均经过精心挑选，符合国际标准（<a href="https://datatracker.ietf.org/doc/html/rfc3849" rel="external nofollow noreferrer">RFC 3849</a>和<a href="https://datatracker.ietf.org/doc/html/rfc5737" rel="external nofollow noreferrer">RFC 5737</a>）：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2001:db8::d00:721</span><br><span class="line">2001:db8::100:86</span><br><span class="line">2001:db8::dead:beef</span><br><span class="line">2001:db8::c0:ffee</span><br><span class="line">203.0.113.160</span><br><span class="line">203.0.113.157</span><br><span class="line">203.0.113.176</span><br><span class="line">203.0.113.127</span><br></pre></td></tr></table></figure><p>阻断节点提供7*24小时不间断服务，确保您的网站 <strong>永远打不开</strong> ，直到您停止使用本服务为止。</p><p>本服务的IP使用经RFC 3849和RFC 5737明确定义的阻断地址，确保本服务不会将您的网站莫名其妙解析到恶意网站，用户的数据包甚至不能穿过本地网关，确保阻断有效性。</p><h2 id="2-接入方法"><a href="#2-接入方法" class="headerlink" title="2.接入方法"></a>2.接入方法</h2><p>如开头所述，接入本服务极其简单，只需要将您的域名解析到<code>null.987236.xyz</code>即可，您也可以选择添加子域以获得一个标志为您使用的域名。<br>示例：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">www.example.tld.300INCNAMEnull.987236.xyz.</span><br></pre></td></tr></table></figure><p>或者这样：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">www.example.tld.300 IN  CNAME   example.null.987236.xyz.</span><br></pre></td></tr></table></figure><h2 id="3-常见问题"><a href="#3-常见问题" class="headerlink" title="3.常见问题"></a>3.常见问题</h2><blockquote><p>Q1：这个服务真的可靠吗？永久免费吗？<br>A1：保证可靠，永久免费。其可靠性源于其设计的简单性——几乎没有什么东西可以坏；其免费源于其建立的简单性——几块钱一年站长完全可以负担。</p></blockquote><blockquote><p>Q2：如果是根域需要阻断，且服务商不支持CNAME拉平怎么办？<br>A2：只需从[本文1.1节](.&#x2F;#1.1 本服务架构)提到的8个IP中任选IPv4和IPv6至少各一个设置解析即可。</p></blockquote><blockquote><p>Q3：为什么你的SLA敢写11个9？这根本不是地球能做到的SLA！<br>A3：我确实有这个能力：CloudFlare节点正常时解析到黑洞IP，网站阻断成功；CloudFlare节点异常时不返回解析记录，阻断也成功；全球互联网都炸了，更不用说了绝对阻断成功</p></blockquote><blockquote><p>Q4：这个服务会影响我的SEO吗？<br>A4：当然会！而且效果拔群。搜索引擎爬虫也会被完美阻断，从而无法索引您的网站。这可以有效地保护您的网站内容不被抄袭，同时帮助您降低服务器带宽成本，实为一举两得。</p></blockquote><blockquote><p>Q5：如果我后悔了，想恢复正常访问怎么办？<br>A5：这是一个高级功能。您只需要在您的DNS管理平台中，删除我们提供的CNAME记录或IP地址，并将解析记录恢复为您真实的服务器IP即可。请注意，此操作可能会让您的网站重新变得可以访问。</p></blockquote><blockquote><p>Q6：……<br>A6：感谢您的咨询，我们下次再见！</p></blockquote>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;0-引言&quot;&gt;&lt;a href=&quot;#0-引言&quot; class=&quot;headerlink&quot; title=&quot;0.引言&quot;&gt;&lt;/a&gt;0.引言&lt;/h2&gt;&lt;p&gt;众所周知，如果你想屏蔽某地区的IP地址，你就要在服务端设置iptables&amp;#x2F;WAF规则，但这会带来额外的性能开销导</summary>
-      
-    
-    
-    
-    <category term="搞笑文章" scheme="https://blog.wdfqx.top/categories/%E6%90%9E%E7%AC%91%E6%96%87%E7%AB%A0/"/>
-    
-    
-    <category term="互联网" scheme="https://blog.wdfqx.top/tags/%E4%BA%92%E8%81%94%E7%BD%91/"/>
-    
-    <category term="访问控制" scheme="https://blog.wdfqx.top/tags/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6/"/>
-    
-    <category term="域名" scheme="https://blog.wdfqx.top/tags/%E5%9F%9F%E5%90%8D/"/>
-    
-    <category term="IPv4" scheme="https://blog.wdfqx.top/tags/IPv4/"/>
-    
-    <category term="IPv6" scheme="https://blog.wdfqx.top/tags/IPv6/"/>
-    
-    <category term="DNS" scheme="https://blog.wdfqx.top/tags/DNS/"/>
-    
-  </entry>
-  
-  <entry>
     <title>你的网站是怎么被墙的</title>
     <link href="https://blog.wdfqx.top/posts/6daf32bc/"/>
     <id>https://blog.wdfqx.top/posts/6daf32bc/</id>
@@ -115,11 +81,11 @@
     <category term="科普" scheme="https://blog.wdfqx.top/categories/%E7%A7%91%E6%99%AE/"/>
     
     
-    <category term="算法" scheme="https://blog.wdfqx.top/tags/%E7%AE%97%E6%B3%95/"/>
-    
     <category term="互联网" scheme="https://blog.wdfqx.top/tags/%E4%BA%92%E8%81%94%E7%BD%91/"/>
     
     <category term="内容审核" scheme="https://blog.wdfqx.top/tags/%E5%86%85%E5%AE%B9%E5%AE%A1%E6%A0%B8/"/>
+    
+    <category term="算法" scheme="https://blog.wdfqx.top/tags/%E7%AE%97%E6%B3%95/"/>
     
     <category term="访问控制" scheme="https://blog.wdfqx.top/tags/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6/"/>
     
@@ -153,9 +119,9 @@
     <category term="科普" scheme="https://blog.wdfqx.top/categories/%E7%A7%91%E6%99%AE/"/>
     
     
-    <category term="算法" scheme="https://blog.wdfqx.top/tags/%E7%AE%97%E6%B3%95/"/>
-    
     <category term="内容审核" scheme="https://blog.wdfqx.top/tags/%E5%86%85%E5%AE%B9%E5%AE%A1%E6%A0%B8/"/>
+    
+    <category term="算法" scheme="https://blog.wdfqx.top/tags/%E7%AE%97%E6%B3%95/"/>
     
     <category term="敏感词" scheme="https://blog.wdfqx.top/tags/%E6%95%8F%E6%84%9F%E8%AF%8D/"/>
     
@@ -264,6 +230,8 @@
     <category term="科普" scheme="https://blog.wdfqx.top/categories/%E7%A7%91%E6%99%AE/"/>
     
     
+    <category term="算法" scheme="https://blog.wdfqx.top/tags/%E7%AE%97%E6%B3%95/"/>
+    
     <category term="互联网广告" scheme="https://blog.wdfqx.top/tags/%E4%BA%92%E8%81%94%E7%BD%91%E5%B9%BF%E5%91%8A/"/>
     
     <category term="广告变现" scheme="https://blog.wdfqx.top/tags/%E5%B9%BF%E5%91%8A%E5%8F%98%E7%8E%B0/"/>
@@ -273,8 +241,6 @@
     <category term="CPM" scheme="https://blog.wdfqx.top/tags/CPM/"/>
     
     <category term="用户画像" scheme="https://blog.wdfqx.top/tags/%E7%94%A8%E6%88%B7%E7%94%BB%E5%83%8F/"/>
-    
-    <category term="算法" scheme="https://blog.wdfqx.top/tags/%E7%AE%97%E6%B3%95/"/>
     
     <category term="竞价广告" scheme="https://blog.wdfqx.top/tags/%E7%AB%9E%E4%BB%B7%E5%B9%BF%E5%91%8A/"/>
     
