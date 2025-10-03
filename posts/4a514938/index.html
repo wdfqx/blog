@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>优化Netlify在中国大陆地区的超时问题 | wdfqx Blog</title><meta name="author" content="wdfqx"><meta name="copyright" content="wdfqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="0.引言前段时间我评测了Netlify在内的各家托管的访问速度（详见此处），当时得出的结论是Netlify不如Vercel，存在一些地区被阻断的问题，研究解决方案时偶然看到CDN可以进行优选IP的操作，遂心生一计：测速优选中国大陆地区不阻断的IP地址。本篇使用的测速方法为itdog网站测速-IPv4版 | itdog网站测速-IPv6版，IPv4和IPv6均有 0.1 免责声明作者个人观点仅供参考">
 <meta property="og:type" content="article">
 <meta property="og:title" content="优化Netlify在中国大陆地区的超时问题">
-<meta property="og:url" content="https://blog.987632.xyz/posts/4a514938/index.html">
+<meta property="og:url" content="https://987632.xyz/posts/4a514938/index.html">
 <meta property="og:site_name" content="wdfqx Blog">
 <meta property="og:description" content="0.引言前段时间我评测了Netlify在内的各家托管的访问速度（详见此处），当时得出的结论是Netlify不如Vercel，存在一些地区被阻断的问题，研究解决方案时偶然看到CDN可以进行优选IP的操作，遂心生一计：测速优选中国大陆地区不阻断的IP地址。本篇使用的测速方法为itdog网站测速-IPv4版 | itdog网站测速-IPv6版，IPv4和IPv6均有 0.1 免责声明作者个人观点仅供参考">
 <meta property="og:locale" content="zh_CN">
@@ -21,7 +21,7 @@
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "优化Netlify在中国大陆地区的超时问题",
-  "url": "https://blog.987632.xyz/posts/4a514938/",
+  "url": "https://987632.xyz/posts/4a514938/",
   "image": "https://static.987632.xyz/img/20250824115645559.webp",
   "datePublished": "2025-10-01T08:39:51.000Z",
   "dateModified": "2025-10-01T08:39:51.000Z",
@@ -29,10 +29,10 @@
     {
       "@type": "Person",
       "name": "wdfqx",
-      "url": "https://blog.987632.xyz"
+      "url": "https://987632.xyz"
     }
   ]
-}</script><link rel="shortcut icon" href="https://static.987632.xyz/icon/logo.ico"><link rel="canonical" href="https://blog.987632.xyz/posts/4a514938/index.html"><link rel="preconnect"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css"><script>
+}</script><link rel="shortcut icon" href="https://static.987632.xyz/icon/logo.ico"><link rel="canonical" href="https://987632.xyz/posts/4a514938/index.html"><link rel="preconnect"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css"><script>
     (() => {
       
     const saveToLocal = {
