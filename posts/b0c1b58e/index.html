@@ -233,13 +233,13 @@
 <p>IPv6地址记录下来，稍后添加DNS记录</p>
 <h3 id="2-2-添加DNS记录"><a href="#2-2-添加DNS记录" class="headerlink" title="2.2 添加DNS记录"></a>2.2 添加DNS记录</h3><p>首先在Netlify处添加好自定义域名，按照指引操作即可，不难</p>
 <blockquote>
-<p>**注意：如果是第一次添加新的域名的话需要进行域名所有权验证，按照指引操作即可，是正常现象。 **</p>
+<p>注意：如果是第一次添加新的域名的话需要进行域名所有权验证，按照指引操作即可，是正常现象。</p>
 </blockquote>
 <p>添加好之后如下图，显示你的自定义域为Primary domain：<br><img src="https://static.987632.xyz/img/20251003185617430.png" alt="在Netlify处添加好自定义域" loading='lazy'></p>
 <p>然后，在你的DNS提供商处添加域名解析记录， <strong>不要使用Netlify要求填入的<code>&lt;projectname&gt;.netlify.app</code>，否则会前功尽弃</strong>  ，添加A记录和AAAA记录，记录的值填写你选出来速度快的IP地址，IPv4和IPv6的记录建议各两条就可以了， <strong>过多的解析节点反而对优化访问速度不利</strong> 。</p>
 <p>我这里以Cloudflare为例，在下图中的各字段填写对应的值：<br><img src="https://static.987632.xyz/img/20251003190246158.png" alt="Cloudflare添加DNS记录" loading='lazy'></p>
 <blockquote>
-<p>类型选择A或者AAAA<br>名称这里填写你的域名，也就是在Netlify那里填写的自定义域名<br>IPv4（IPv6）地址这一栏填写你选出的高速IP,注意一条记录只能写一个IP地址<br>*如果你想省事也可以直接使用我做好的优选域名，<a href="/posts/b0c1b58e/../posts/e797f254/#Netlify%E4%BC%98%E9%80%89%E5%9F%9F%E5%90%8D">点此查看优选域名</a></p>
+<p>类型选择A或者AAAA<br>名称这里填写你的域名，也就是在Netlify那里填写的自定义域名<br>IPv4（IPv6）地址这一栏填写你选出的高速IP,注意一条记录只能写一个IP地址<br><em>如果你想省事也可以直接使用我做好的优选域名，<a href="/posts/b0c1b58e/../posts/e797f254/#Netlify%E4%BC%98%E9%80%89%E5%9F%9F%E5%90%8D">点此查看优选域名</a></em></p>
 </blockquote>
 <p>添加完成后，等待DNS刷新，大概三到五分钟后浏览器这个自定义域名就能正常访问了，Netlify自动申请了SSL&#x2F;TLS证书进行HTTPS加密（对HTTPS的原理有兴趣可<a href="/posts/b0c1b58e/../../posts/a3e6861f/">试读这篇文章</a>），测试一下打开速度，绿到发麻<br><img src="https://static.987632.xyz/img/20251003191100448.png" alt="优选IP后的Netlify测速" loading='lazy'></p>
 <h2 id="3-完结撒花"><a href="#3-完结撒花" class="headerlink" title="3.完结撒花"></a>3.完结撒花</h2><p>恭喜你，成功地把不稳定的Netlify默认CNAME换掉，做到了网站在中国大陆秒开，希望本篇对你有所帮助</p>
