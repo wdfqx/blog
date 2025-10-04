@@ -1,4 +1,3 @@
-#=====放行国际爬虫=====
 User-agent: Bingbot
 Allow: /
 User-agent: Googlebot
@@ -9,7 +8,6 @@ User-agent: YandexBot
 Allow: /
 User-agent: Applebot
 Allow: /
-#=====拦截部分爬虫=====
 User-agent: MJ12bot
 Disallow: /
 User-agent: AhrefsBot
@@ -32,7 +30,6 @@ User-agent: BarkBot
 Disallow: /
 User-agent: Barkrowler 
 Disallow: /
-#=====拦截中国大陆爬虫=====
 User-agent: Baiduspider
 Disallow: /
 User-agent: Baiduspider-render
@@ -151,3 +148,5 @@ User-agent: Didi
 Disallow: /
 User-agent: *
 Allow: /
+Sitemap: https://987632.xyz/sitemap.xml
+Sitemap: https://987632.xyz/sitemap.txt
