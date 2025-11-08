@@ -6,7 +6,7 @@
   <link href="https://987632.xyz/atom.xml" rel="self"/>
   
   <link href="https://987632.xyz/"/>
-  <updated>2025-11-07T13:46:36.000Z</updated>
+  <updated>2025-11-08T16:18:18.000Z</updated>
   <id>https://987632.xyz/</id>
   
   <author>
@@ -15,6 +15,38 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>制作一个随机图API</title>
+    <link href="https://987632.xyz/posts/9e1ff682/"/>
+    <id>https://987632.xyz/posts/9e1ff682/</id>
+    <published>2025-11-08T16:18:18.000Z</published>
+    <updated>2025-11-08T16:18:18.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="0-引言"><a href="#0-引言" class="headerlink" title="0.引言"></a>0.引言</h2><p>众所周知啊， <strong>API（Application Programming Interface&#x2F;应用程序编程接口）</strong> 类型那叫一个千奇百怪，啥都有，我随随便便用EdgeOne Pages Functions做了个随机图API，至于你问我做它想干啥……我也不知道<del>（等会，你关心这个干嘛？）</del>，API端点也直接公开，反正EdgeOne的Functions免费无限用，你爱用就用（不是）</p><h2 id="1-API端点"><a href="#1-API端点" class="headerlink" title="1.API端点"></a>1.API端点</h2><p>API端点域名为<code>randomimg.987632.xyz</code>，用法如下：</p><ul><li>随用户User-Agent自适应图像：<a href="https://randomimg.987632.xyz/img/ua" rel="external nofollow noreferrer">https://randomimg.987632.xyz/img/ua</a></li><li>获取横屏图像用于桌面端：<a href="https://randomimg.987632.xyz/img/deskop" rel="external nofollow noreferrer">https://randomimg.987632.xyz/img/deskop</a></li><li>获取竖屏图像用于移动端：<a href="https://randomimg.987632.xyz/img/mobile" rel="external nofollow noreferrer">https://randomimg.987632.xyz/img/mobile</a></li></ul><h2 id="2-具体实现："><a href="#2-具体实现：" class="headerlink" title="2.具体实现："></a>2.具体实现：</h2><p>图源存放在Backblaze B2上，Backblaze免费提供10GB的存储空间和10GB的流量，空间对于随机图而言几乎用不完<del>（你家webp图片能用10个G啊？）</del>，但10GB如果全部用于公网流出就有些不够用了，所以我选择使用EdgeOne进行缓存，中国大陆速度尚可</p><p>图片分为横屏和竖屏两类，分别对应桌面端（<code>/img/deskop</code>）和移动端（<code>/img/mobile</code>），全部重命名为纯数字文件名，为传输优化而全部采用webp格式节省大小。</p><p>EdgeOne Pages Functions作为用户访问的入口端点（即上文提到的端点），收到请求后根据HTTP请求的Path进行处理，区分横屏、竖屏、自适应三类，在内部生成一个随机数，范围硬编码在代码里，图源我没有设置防盗链故未作处理（如果你要自己部署自定义后端端点的API请自行解决好防盗链问题），更多细节详见我发布的源码，见此处：<a href="https://github.com/wdfqx/edgeone_randomimg_api" rel="external nofollow noreferrer">https://github.com/wdfqx/edgeone_randomimg_api</a></p><h2 id="3-具体代码实现"><a href="#3-具体代码实现" class="headerlink" title="3.具体代码实现"></a>3.具体代码实现</h2><blockquote><p>温馨提示：本项目所用的代码仅供参考学习使用，下载后请在24小时内删除。</p></blockquote><p>此处展示的是自适应图像的处理逻辑</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">onRequest</span>(<span class="params">&#123; request &#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> ua = request.<span class="property">headers</span>.<span class="title function_">get</span>(<span class="string">&quot;user-agent&quot;</span>) || <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">const</span> isMobile = <span class="regexp">/Android|iPhone|iPad|iPod|Mobile|BlackBerry|IEMobile|Opera Mini/i</span>.<span class="title function_">test</span>(ua);</span><br><span class="line">    <span class="keyword">const</span> isDesktop = !isMobile &amp;&amp; <span class="regexp">/Windows NT|Macintosh|X11|Linux|Mac OS X|Ubuntu/i</span>.<span class="title function_">test</span>(ua); <span class="comment">//判定用户设备类型</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> type;</span><br><span class="line">    <span class="keyword">if</span> (isDesktop) type = <span class="string">&quot;h&quot;</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (isMobile) type = <span class="string">&quot;s&quot;</span>;</span><br><span class="line">    <span class="keyword">else</span> type = <span class="title class_">Math</span>.<span class="title function_">random</span>() &lt; <span class="number">0.5</span> ? <span class="string">&quot;s&quot;</span> : <span class="string">&quot;h&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">randIntInclusive</span> = (<span class="params">min, max</span>) =&gt;</span><br><span class="line">      <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="title class_">Math</span>.<span class="title function_">random</span>() * (max - min + <span class="number">1</span>)) + min; <span class="comment">//随机数生成模块</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> num = type === <span class="string">&quot;s&quot;</span> ? <span class="title function_">randIntInclusive</span>(<span class="number">1</span>, <span class="number">2942</span>) : <span class="title function_">randIntInclusive</span>(<span class="number">1</span>, <span class="number">833</span>);</span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">`https://b2.randomimg.987632.xyz/<span class="subst">$&#123;type&#125;</span>/<span class="subst">$&#123;num&#125;</span>.webp`</span>; <span class="comment">//拼接回源URL</span></span><br><span class="line">    <span class="comment">//如果你要自部署的话请尽量自行搭建图源</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> upstream = <span class="keyword">await</span> <span class="title function_">fetch</span>(url);</span><br><span class="line">    <span class="keyword">const</span> arrayBuffer = <span class="keyword">await</span> upstream.<span class="title function_">arrayBuffer</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(arrayBuffer, &#123; </span><br><span class="line">      <span class="attr">status</span>: upstream.<span class="property">status</span>,</span><br><span class="line">      <span class="attr">headers</span>: &#123;</span><br><span class="line">        <span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;image/webp&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Cache-Control&quot;</span>: <span class="string">&quot;no-cache&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;); <span class="comment">//向用户返回随机的图片</span></span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(</span><br><span class="line">      <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123; <span class="attr">error</span>: <span class="string">&quot;Internal Error&quot;</span>, <span class="attr">msg</span>: <span class="title class_">String</span>(err) &#125;),</span><br><span class="line">      &#123; <span class="attr">status</span>: <span class="number">500</span>, <span class="attr">headers</span>: &#123; <span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;application/json&quot;</span> &#125; &#125;</span><br><span class="line">    ); <span class="comment">// 故障处理逻辑</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;0-引言&quot;&gt;&lt;a href=&quot;#0-引言&quot; class=&quot;headerlink&quot; title=&quot;0.引言&quot;&gt;&lt;/a&gt;0.引言&lt;/h2&gt;&lt;p&gt;众所周知啊， &lt;strong&gt;API（Application Programming Interface&amp;#x2F;应用程序</summary>
+      
+    
+    
+    
+    <category term="记录" scheme="https://987632.xyz/categories/%E8%AE%B0%E5%BD%95/"/>
+    
+    
+    <category term="CDN" scheme="https://987632.xyz/tags/CDN/"/>
+    
+    <category term="EdgeOne" scheme="https://987632.xyz/tags/EdgeOne/"/>
+    
+    <category term="Serverless函数" scheme="https://987632.xyz/tags/Serverless%E5%87%BD%E6%95%B0/"/>
+    
+    <category term="随机图API" scheme="https://987632.xyz/tags/%E9%9A%8F%E6%9C%BA%E5%9B%BEAPI/"/>
+    
+    <category term="Backblaze" scheme="https://987632.xyz/tags/Backblaze/"/>
+    
+  </entry>
   
   <entry>
     <title>如何获取一个免费的ip6.arpa域名</title>
@@ -36,6 +68,8 @@
     <category term="记录" scheme="https://987632.xyz/categories/%E8%AE%B0%E5%BD%95/"/>
     
     
+    <category term="CDN" scheme="https://987632.xyz/tags/CDN/"/>
+    
     <category term="IPv6" scheme="https://987632.xyz/tags/IPv6/"/>
     
     <category term="ip6.arpa" scheme="https://987632.xyz/tags/ip6-arpa/"/>
@@ -43,8 +77,6 @@
     <category term="域名" scheme="https://987632.xyz/tags/%E5%9F%9F%E5%90%8D/"/>
     
     <category term="DNS" scheme="https://987632.xyz/tags/DNS/"/>
-    
-    <category term="CDN" scheme="https://987632.xyz/tags/CDN/"/>
     
     <category term="CA（证书颁发机构）" scheme="https://987632.xyz/tags/CA%EF%BC%88%E8%AF%81%E4%B9%A6%E9%A2%81%E5%8F%91%E6%9C%BA%E6%9E%84%EF%BC%89/"/>
     
@@ -78,13 +110,13 @@
     
     <category term="TLS" scheme="https://987632.xyz/tags/TLS/"/>
     
+    <category term="CDN" scheme="https://987632.xyz/tags/CDN/"/>
+    
     <category term="IPv6" scheme="https://987632.xyz/tags/IPv6/"/>
     
     <category term="域名" scheme="https://987632.xyz/tags/%E5%9F%9F%E5%90%8D/"/>
     
     <category term="DNS" scheme="https://987632.xyz/tags/DNS/"/>
-    
-    <category term="CDN" scheme="https://987632.xyz/tags/CDN/"/>
     
     <category term="IPv4" scheme="https://987632.xyz/tags/IPv4/"/>
     
@@ -118,13 +150,13 @@
     
     <category term="TLS" scheme="https://987632.xyz/tags/TLS/"/>
     
+    <category term="CDN" scheme="https://987632.xyz/tags/CDN/"/>
+    
     <category term="IPv6" scheme="https://987632.xyz/tags/IPv6/"/>
     
     <category term="域名" scheme="https://987632.xyz/tags/%E5%9F%9F%E5%90%8D/"/>
     
     <category term="DNS" scheme="https://987632.xyz/tags/DNS/"/>
-    
-    <category term="CDN" scheme="https://987632.xyz/tags/CDN/"/>
     
     <category term="IPv4" scheme="https://987632.xyz/tags/IPv4/"/>
     
@@ -153,11 +185,11 @@
     <category term="科普" scheme="https://987632.xyz/categories/%E7%A7%91%E6%99%AE/"/>
     
     
+    <category term="算法" scheme="https://987632.xyz/tags/%E7%AE%97%E6%B3%95/"/>
+    
     <category term="互联网" scheme="https://987632.xyz/tags/%E4%BA%92%E8%81%94%E7%BD%91/"/>
     
     <category term="内容审核" scheme="https://987632.xyz/tags/%E5%86%85%E5%AE%B9%E5%AE%A1%E6%A0%B8/"/>
-    
-    <category term="算法" scheme="https://987632.xyz/tags/%E7%AE%97%E6%B3%95/"/>
     
     <category term="访问控制" scheme="https://987632.xyz/tags/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6/"/>
     
@@ -191,9 +223,9 @@
     <category term="科普" scheme="https://987632.xyz/categories/%E7%A7%91%E6%99%AE/"/>
     
     
-    <category term="内容审核" scheme="https://987632.xyz/tags/%E5%86%85%E5%AE%B9%E5%AE%A1%E6%A0%B8/"/>
-    
     <category term="算法" scheme="https://987632.xyz/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="内容审核" scheme="https://987632.xyz/tags/%E5%86%85%E5%AE%B9%E5%AE%A1%E6%A0%B8/"/>
     
     <category term="敏感词" scheme="https://987632.xyz/tags/%E6%95%8F%E6%84%9F%E8%AF%8D/"/>
     
@@ -302,8 +334,6 @@
     <category term="科普" scheme="https://987632.xyz/categories/%E7%A7%91%E6%99%AE/"/>
     
     
-    <category term="算法" scheme="https://987632.xyz/tags/%E7%AE%97%E6%B3%95/"/>
-    
     <category term="互联网广告" scheme="https://987632.xyz/tags/%E4%BA%92%E8%81%94%E7%BD%91%E5%B9%BF%E5%91%8A/"/>
     
     <category term="广告变现" scheme="https://987632.xyz/tags/%E5%B9%BF%E5%91%8A%E5%8F%98%E7%8E%B0/"/>
@@ -313,6 +343,8 @@
     <category term="CPM" scheme="https://987632.xyz/tags/CPM/"/>
     
     <category term="用户画像" scheme="https://987632.xyz/tags/%E7%94%A8%E6%88%B7%E7%94%BB%E5%83%8F/"/>
+    
+    <category term="算法" scheme="https://987632.xyz/tags/%E7%AE%97%E6%B3%95/"/>
     
     <category term="竞价广告" scheme="https://987632.xyz/tags/%E7%AB%9E%E4%BB%B7%E5%B9%BF%E5%91%8A/"/>
     
